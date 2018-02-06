@@ -51,7 +51,7 @@ def show_category(request,category_name_slug):
     # Go render the response and return it to the client.
     return render(request, 'rango/category.html', context_dict)
 
-
+@login_required
 def add_category(request):
     form = CategoryForm()
     # A HTTP POST?
@@ -73,6 +73,7 @@ def add_category(request):
     # Render the form with error messages (if any).
     return render(request, 'rango/add_category.html', {'form': form})
 
+@login_required
 def add_page(request, category_name_slug):
     try:
         category = Category.objects.get(slug=category_name_slug)
@@ -147,7 +148,9 @@ def user_login(request):
                  return HttpResponse("Your Rango account is disabled.")
         else:
             print("Invalid login details: {0}, {1}".format(username, password))
-            return HttpResponse("Invalid login details supplied.")
+            context_dict['bad_details'] = True
+            #return HttpResponse("Invalid login details supplied.")
+            return render_to_response('rango/login.html', context_dict, context)
     else:
         return render(request, 'rango/login.html', {})
 
